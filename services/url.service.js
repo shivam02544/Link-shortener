@@ -9,16 +9,37 @@ const {
 // CREATE SHORT URL
 const createURLService = async (url) => {
 
-  // GENERATE SHORT CODE
-  const shortCode = generateShortCode();
+  while (true) {
 
-  // SAVE TO DATABASE
-  await createShortURL(shortCode, url);
+    // GENERATE RANDOM CODE
+    const shortCode = generateShortCode();
 
-  return {
-    shortCode,
-    shortURL: `http://localhost:3001/${shortCode}`
-  };
+    try {
+
+      // TRY INSERTING DIRECTLY
+      await createShortURL(shortCode, url);
+
+      // SUCCESS
+      return {
+        shortCode,
+        shortURL: `http://localhost:3001/${shortCode}`
+      };
+
+    } catch (error) {
+
+      // POSTGRES UNIQUE CONSTRAINT ERROR
+      if (error.code === "23505") {
+
+        console.log("Collision happened. Retrying...");
+
+        // RETRY AGAIN
+        continue;
+      }
+
+      // OTHER ERRORS
+      throw error;
+    }
+  }
 };
 
 

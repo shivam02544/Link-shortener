@@ -42,7 +42,8 @@ const redirectURLController = async (req, res) => {
 
     const result =
       await getOriginalURLService(code);
-
+    console.log(result);
+    
     // CHECK IF URL EXISTS
     if (!result) {
 

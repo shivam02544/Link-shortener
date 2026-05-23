@@ -7,6 +7,7 @@ const nanoid = customAlphabet(
 
 const generateShortCode = () => {
   return nanoid();
+  // return "ABC123"
 };
 
 module.exports = generateShortCode;
