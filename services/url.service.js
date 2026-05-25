@@ -4,6 +4,7 @@ const {
   createShortURL,
   findByShortCode
 } = require("../repositories/url.repository");
+const redisClient = require("../config/redis");
 
 
 // CREATE SHORT URL
@@ -46,7 +47,38 @@ const createURLService = async (url) => {
 // GET ORIGINAL URL
 const getOriginalURLService = async (code) => {
 
-  const result = await findByShortCode(code);
+  // CHECK CACHE
+  const cachedURL =
+    await redisClient.get(code);
+
+  // CACHE HIT
+  if (cachedURL) {
+
+    console.log("CACHE HIT");
+
+    return {
+      link_address: cachedURL
+    };
+  }
+
+  console.log("CACHE MISS");
+
+  // FETCH FROM DB
+  const result =
+    await findByShortCode(code);
+
+  // IF URL EXISTS
+  if (result) {
+
+    // STORE IN CACHE
+    await redisClient.set(
+      code,
+      result.link_address,
+      {
+        EX: 60
+      }
+    );
+  }
 
   return result;
 };
