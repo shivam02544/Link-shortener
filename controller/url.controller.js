@@ -3,6 +3,12 @@ const {
   getOriginalURLService
 } = require("../services/url.service");
 
+ const {
+      createAnalyticsService
+    } = require("../services/analytics.service");
+
+const analyticsQueue =
+  require("../queues/analytics.queue");
 
 // CREATE SHORT URL
 const createShortURLController = async (req, res) => {
@@ -42,8 +48,13 @@ const redirectURLController = async (req, res) => {
 
     const result =
       await getOriginalURLService(code);
-    console.log(result);
-    
+
+
+    // FIRE AND FORGET
+    // createAnalyticsService(code);
+
+    analyticsQueue.push(code);
+
     // CHECK IF URL EXISTS
     if (!result) {
 

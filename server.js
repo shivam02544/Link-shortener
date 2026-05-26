@@ -1,6 +1,7 @@
 const app = require("./app");
 
 const pool = require("./config/db");
+require("./workers/analytics.worker");
 
 
 // CREATE TABLE
@@ -14,6 +15,14 @@ const initDB = async () => {
         short_code VARCHAR(6) UNIQUE,
         link_address TEXT
       )
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS analytics (
+      id SERIAL PRIMARY KEY,
+      short_code VARCHAR(6),
+      clicked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
     `);
 
     console.log("Database ready");
