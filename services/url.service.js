@@ -45,7 +45,7 @@ const createURLService = async (url) => {
 
 
 // GET ORIGINAL URL
-const getOriginalURLService = async (code) => {
+const getOriginalURLService = async (code,requestId) => {
 
   // CHECK CACHE
   const cachedURL =
@@ -54,7 +54,9 @@ const getOriginalURLService = async (code) => {
   // CACHE HIT
   if (cachedURL) {
 
-    console.log("CACHE HIT");
+    console.log(
+  `[${requestId}] CACHE HIT`
+);
 
     return {
       link_address: cachedURL

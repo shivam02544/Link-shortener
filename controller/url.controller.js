@@ -24,7 +24,7 @@ const createShortURLController = async (req, res) => {
       });
     }
 
-    const result = await createURLService(url);
+    const result = await createURLService(url,req.requestId);
 
     return res.status(201).json(result);
 
@@ -47,8 +47,10 @@ const redirectURLController = async (req, res) => {
     const { code } = req.params;
 
     const result =
-      await getOriginalURLService(code);
-
+  await getOriginalURLService(
+    code,
+    req.requestId
+  );
 
     // FIRE AND FORGET
     // createAnalyticsService(code);
